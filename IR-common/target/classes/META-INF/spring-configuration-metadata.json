@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "ir.thread",
+      "type": "IR.org.common.config.MyThreadPoolConfigProperties",
+      "sourceType": "IR.org.common.config.MyThreadPoolConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ir.thread.core-size",
+      "type": "java.lang.Integer",
+      "sourceType": "IR.org.common.config.MyThreadPoolConfigProperties"
+    },
+    {
+      "name": "ir.thread.keep-alive-time",
+      "type": "java.lang.Integer",
+      "sourceType": "IR.org.common.config.MyThreadPoolConfigProperties"
+    },
+    {
+      "name": "ir.thread.max-size",
+      "type": "java.lang.Integer",
+      "sourceType": "IR.org.common.config.MyThreadPoolConfigProperties"
+    }
+  ],
+  "hints": []
+}

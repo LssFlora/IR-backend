@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="IR.org.core.dao.PolicyInfoMapper">
+
+<select id="getProcessingInfo" resultType="IR.org.core.vo.viewInfoVo">
+    select p.id,insurant_id,name,phone,identity_card,declaration_time,policy_status,i.insure_type  from IR.policy_info p,insured_user_info i
+    where insurant_id = i.id and policy_status in (${str}) and p.policy_status &lt; 4 ;
+    </select>
+
+<select id="getCompletedInfo" resultType="IR.org.core.vo.viewInfoVo">
+    select p.id,insurant_id,name,phone,identity_card,declaration_time,policy_status,i.insure_type from IR.policy_info p,insured_user_info i where insurant_id = i.id and p.id in (${str});
+    </select>
+
+<select id="getEngingInfo" resultType="IR.org.core.vo.viewInfoVo">
+    select p.id,insurant_id,name,phone,identity_card,declaration_time,policy_status,i.insure_type  from IR.policy_info p,insured_user_info i where insurant_id = i.id and policy_status in (4,5);
+    </select>
+
+<select id="getHistorical" resultType="IR.org.core.vo.HistoricalVo">
+    select declaration_time,event_description,reimbursement_amount,reimbursement_company
+    from IR.policy_info p,IR.reimbursement_info r
+    where  p.reimbursement_id = r.id and p.insurant_id = #{id} and policy_status = 4 and p.declaration_time &lt;= #{date} and r.reimbursement_company != #{name};
+    </select>
+
+    <select id="getHistoricalSelf" resultType="IR.org.core.vo.HistoricalSelfVo">
+        select declaration_time,event_description,reimbursement_amount
+        from IR.policy_info p,IR.reimbursement_info r
+        where  p.reimbursement_id = r.id and p.insurant_id = #{id} and r.reimbursement_company = #{name} and policy_status = 4 and p.declaration_time &lt;= #{date};
+    </select>
+
+<update id="setEvaluationResults">
+    update IR.policy_info set evaluation_status = #{status},policy_status = #{state},reason = #{reason} where id = #{id}
+    </update>
+
+<select id="getAmount" resultType="java.math.BigDecimal">
+    select receipt_money from receipt_info r,policy_info p where p.id = #{id} and r.id = p.receipt_id ;
+    </select>
+
+<update id="setReimbursementId">
+    update IR.policy_info set reimbursement_id = #{id},policy_status = 4 where id = #{policyId}
+    </update>
+
+<select id="getOverViewInfo" resultType="IR.org.core.vo.OverviewVo">
+    select p.id,p.policy_number,p.hospital_name,p.designated_hospital_status,p.declaration_time,p.event_description,p.evaluation_status,p.reason,
+           i.name,i.sex,i.phone,i.identity_card,i.city,i.date_of_birth,i.insure_type,i.insurance_period,i.expiration_time,
+           r.reimbursement_number,r.payee_name,r.payee_sex,r.payee_phone,r.payee_city,r.reimbursement_amount,r.payment_method,r.collection_account,r.reimbursement_company
+    from policy_info p,reimbursement_info r,insured_user_info i
+    where p.id = #{id} and p.insurant_id = i.id and p.reimbursement_id = r.id;
+    </select>
+
+<insert id="setRegisterInfo" parameterType="IR.org.core.entity.PolicyInfo" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+    insert into policy_info(insurant_id, receipt_id, policy_number, hospital_name, designated_hospital_status, hospitalization_status, declaration_time, event_description, policy_status)
+    values (#{data.insurantId},#{data.receiptId},#{data.policyNumber},#{data.hospitalName},#{data.designatedHospitalStatus},#{data.hospitalizationStatus},#{data.declarationTime},#{data.eventDescription},#{data.policyStatus})
+    </insert>
+
+<select id="getReceiptInfo" resultType="IR.org.core.vo.ReceiptInfoVo">
+    select receipt_type,receipt_money from receipt_info r,policy_info p where p.id = #{id} and p.receipt_id = r.id;
+    </select>
+
+<select id="getOverViewInfo1" resultType="IR.org.core.vo.OverviewVo">
+    select p.id,p.policy_number,p.hospital_name,p.designated_hospital_status,p.declaration_time,p.event_description,p.evaluation_status,p.reason,i.name,i.sex,i.phone,i.identity_card,i.city,i.date_of_birth,i.insure_type,i.insurance_period,i.expiration_time
+    from policy_info as p,insured_user_info as i where p.insurant_id = i.id and p.id = #{id};
+    </select>
+
+<select id="getInsureType" resultType="int">
+    select insure_type from insured_user_info i,policy_info p where p.id = #{id} and p.insurant_id = i.id;
+    </select>
+
+<select id="countPolicyInfo" resultType="int">
+    select count(*)-1 from policy_info where insurant_id = (select insurant_id from policy_info where id = #{id})
+    </select>
+</mapper>

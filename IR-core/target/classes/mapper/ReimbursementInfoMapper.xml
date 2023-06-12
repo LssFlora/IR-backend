@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="IR.org.core.dao.ReimbursementInfoMapper">
+
+<insert id="setReimbursementInfo" useGeneratedKeys="true" parameterType="IR.org.core.entity.ReimbursementInfo" keyProperty="id" keyColumn="id">
+    insert into reimbursement_info (insurant_id,reimbursement_number,payee_city,payee_sex,payee_name,payee_phone,reimbursement_amount,reimbursement_company,collection_account,payment_method,reimbursement_status)
+    values (#{data.insurantId},#{data.reimbursementNumber},#{data.payeeCity},#{data.payeeSex},#{data.payeeName},#{data.payeePhone},#{data.reimbursementAmount},#{data.reimbursementCompany},#{data.collectionAccount},#{data.paymentMethod},#{data.reimbursementStatus});
+    </insert>
+
+</mapper>
